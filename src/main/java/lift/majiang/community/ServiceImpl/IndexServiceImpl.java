@@ -18,4 +18,11 @@ public class IndexServiceImpl implements IndexService {
 
         return user;
     }
+
+    //统计有多少问题
+
+
+
+
+
 }
