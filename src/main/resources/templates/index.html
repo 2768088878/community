@@ -7,44 +7,12 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/community.css">
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">码匠社区</span>
-            </button>
-            <a class="navbar-brand" href="/">码匠社区</a>
-        </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-            <form class="navbar-form navbar-left">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="搜索问题">
-                </div>
-                <button type="submit" class="btn btn-default">搜索</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li th:if="${session.user!=null}"><a href="/publish">发布</a></li>
-                <li th:if="${session.user==null}">
-                    <a href="https://github.com/login/oauth/authorize?client_id=b5d45514c04c82bf47f4&redirect_uri=http://localhost:8087/callback&scope=user&state=1">登录</a>
-                </li>
-                <li class="dropdown" th:if="${session.user!= null}">
-                    <a href="#" class="dropdown-toggle" th:text="${session.user.getName()}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">消息中心</a></li>
-                        <li><a href="#">个人资料</a></li>
-                        <li><a href="/exitLogin">退出登录</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
+<!--首部导航-->
+<div th:replace="~{common ::nav}"></div>
 
 <div class="container-fluid main">
     <div class="row">
@@ -55,13 +23,15 @@
             <div class="media" th:each="question: ${questionList}">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object" src="/image/a.jpg" style="width: 55px">
+                        <img class="media-object" src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2963225266,3613162653&fm=26&gp=0.jpg" style="width: 55px">
                         <!--th:src="@{question.user.avatarUrl}"-->
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${question.title}" style="font-weight: bold"></h4>
-                    <span th:text="${question.description}"></span> <br>
+                    <h4 class="media-heading">
+                        <a th:href="@{'question/'+${question.id}}" th:text="${question.title}"></a>
+                    </h4>
+                    <span th:text="${#strings.abbreviate(question.description,50)}"></span> <br>
                     <span style="font-size: 12px;font-weight: normal;color: #999"><span th:text="${question.commentCount}"></span>个回复  ·
                         <span th:text="${question.viewCount}"></span>次浏览  ·  <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
                 </div>
@@ -69,9 +39,21 @@
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>热门话题</h3>
-            * 问题标题：请用精简的语言描述你发布的问题，不超过25字 <br>
-            * 问题补充：详细补充你的问题内容 <br>
-            * 选择标签：选择一个或者多个适合的标签，用逗号隔开，每个标签不超过10个字
+            <div class="question-related" th:each="hotQuestion: ${hotQuestions}">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2963225266,3613162653&fm=26&gp=0.jpg" style="width: 55px">
+                        <!--th:src="@{question.user.avatarUrl}"-->
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a th:href="@{'question/'+${hotQuestion.id}}" th:text="${hotQuestion.title}"></a>
+                    </h4>
+                    <span style="font-size: 12px;font-weight: normal;color: #999"><span th:text="${hotQuestion.commentCount}"></span>个回复  ·
+                        <span th:text="${hotQuestion.viewCount}"></span>次浏览</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -84,7 +66,7 @@
         </li>
         <li>
             <a th:href="@{'/?page='+${lastPage}}" aria-label="Previous">
-                <span aria-hidden="true">上一页</span>
+                <span aria-hidden="true">&lt;</span>
             </a>
         </li>
         <li><a th:href="@{'/?page='+${currentPage-4}}" th:if="${currentPage-4}>0" th:text="${currentPage-4}"></a></li>
@@ -92,13 +74,13 @@
         <li><a th:href="@{'/?page='+${currentPage-2}}" th:if="${currentPage-2}>0" th:text="${currentPage-2}"></a></li>
         <li><a th:href="@{'/?page='+${currentPage-1}}" th:if="${currentPage-1}>0" th:text="${currentPage-1}"></a></li>
         <li class="active"><a th:href="@{'/?page='+${currentPage}}" th:text="${currentPage}"></a></li>
-        <li><a th:href="@{'/?page='+${currentPage+1}}" th:if="${currentPage+1}<${totalPage}" th:text="${currentPage+1}"></a></li>
-        <li><a th:href="@{'/?page='+${currentPage+2}}" th:if="${currentPage+2}<${totalPage}" th:text="${currentPage+2}"></a></li>
-        <li><a th:href="@{'/?page='+${currentPage+3}}" th:if="${currentPage+3}<${totalPage}" th:text="${currentPage+3}"></a></li>
-        <li><a th:href="@{'/?page='+${currentPage+4}}" th:if="${currentPage+4}<${totalPage}" th:text="${currentPage+4}"></a></li>
+        <li><a th:href="@{'/?page='+${currentPage+1}}" th:if="${currentPage+1}<=${totalPage}" th:text="${currentPage+1}"></a></li>
+        <li><a th:href="@{'/?page='+${currentPage+2}}" th:if="${currentPage+2}<=${totalPage}" th:text="${currentPage+2}"></a></li>
+        <li><a th:href="@{'/?page='+${currentPage+3}}" th:if="${currentPage+3}<=${totalPage}" th:text="${currentPage+3}"></a></li>
+        <li><a th:href="@{'/?page='+${currentPage+4}}" th:if="${currentPage+4}<=${totalPage}" th:text="${currentPage+4}"></a></li>
         <li>
             <a th:href="@{'/?page='+${nextPage}}" aria-label="Previous">
-                <span aria-hidden="true">下一页</span>
+                <span aria-hidden="true">&gt;</span>
             </a>
         </li>
         <li>
@@ -108,5 +90,8 @@
         </li>
     </ul>
 </nav>
+
+<!--尾部-->
+<div th:replace="~{footer ::foot}"></div>
 </body>
 </html>

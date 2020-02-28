@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${sectionName}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <script src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/community.css">
+</head>
+<body>
+
+<!--首部导航-->
+<div th:replace="~{common ::nav}"></div>
+
+<div class="container-fluid main profile">
+    <div class="row">
+        <!--左边-->
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span th:text="${sectionName}"></span></h2>
+            <hr>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="media" th:each="reply: ${repliesList}">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" src="/image/a.jpg" style="width: 55px">
+                            <!--th:src="@{question.user.avatarUrl}"-->
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <p class="media-heading" th:if="${reply.type=='回复了问题'}">
+                            <span th:text="${reply.notifier.name}+' '+${reply.type}+' '"></span>
+                            <a th:href="@{'/notification/'+${reply.questionId}+'?status=0&replyId='+${reply.id}}"
+                               th:text="${reply.title}"></a>
+                            <span class="label label-danger" th:if="${reply.status==0}">未读</span>
+                            <span class="label label-info" th:if="${reply.status==1}">已读</span>
+                        </p>
+
+                        <p class="media-heading" th:if="${reply.type=='回复了你'}">
+                            <span th:text="${reply.notifier.name}+'在'"></span>
+                            <a th:href="@{'/notification/'+${reply.questionId}+'?status=0&replyId='+${reply.id}}"
+                               th:text="${reply.title}"></a>
+                            <span th:text="${reply.type}"></span>
+                            <span class="label label-danger" th:if="${reply.status==0}">未读</span>
+                            <span class="label label-info" th:if="${reply.status==1}">已读</span>
+
+                        </p>
+<!--                        <span th:text="${question.description}"></span> <br>-->
+                        <span style="font-size: 12px;font-weight: normal;color: #999">
+                            <b th:text="${reply.content}" style="float: left"></b>
+<!--                            <span th:text="${reply.gmtCreate}" style="float: right"></span>-->
+                            <span th:text="${#dates.format(reply.gmtCreate,'yyyy-MM-dd HH:mm')}" style="float: right"></span>  ·
+                        </span>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation" style="text-align: center; ">
+                    <ul class="pagination">
+                        <li>
+                            <a href="/profile/replies?page=1" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/profile/replies?page='+${lastPage}}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
+                        </li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage-4}}" th:if="${currentPage-4}>0" th:text="${currentPage-4}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage-3}}" th:if="${currentPage-3}>0" th:text="${currentPage-3}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage-2}}" th:if="${currentPage-2}>0" th:text="${currentPage-2}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage-1}}" th:if="${currentPage-1}>0" th:text="${currentPage-1}"></a></li>
+                        <li class="active"><a th:href="@{'/profile/replies?page='+${currentPage}}" th:text="${currentPage}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage+1}}" th:if="${currentPage+1}<=${totalPage}" th:text="${currentPage+1}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage+2}}" th:if="${currentPage+2}<=${totalPage}" th:text="${currentPage+2}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage+3}}" th:if="${currentPage+3}<=${totalPage}" th:text="${currentPage+3}"></a></li>
+                        <li><a th:href="@{'/profile/replies?page='+${currentPage+4}}" th:if="${currentPage+4}<=${totalPage}" th:text="${currentPage+4}"></a></li>
+                        <li>
+                            <a th:href="@{'/profile/replies?page='+${nextPage}}" aria-label="Previous">
+                                <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/profile/replies?page='+${totalPage}}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'replies'}">
+                回复通知内容
+            </div>
+        </div>
+
+        <!--右边-->
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <div class="list-group section">
+                <a href="/profile/questions" class="list-group-item" th:classappend="${section=='questions'}?'active':''">我的问题</a>
+                <a href="/profile/replies" class="list-group-item" th:classappend="${section == 'replies'}?'active':''">
+                    最新回复
+                    <span class="badge" th:text="${session.noticeCount}"></span>
+                </a>
+                <a href="#" class="list-group-item">Morbi leo risus</a>
+                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item">Vestibulum at eros</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--尾部-->
+<div th:replace="~{footer ::foot}"></div>
+
+
+
+</body>
+</html>

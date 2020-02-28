@@ -5,6 +5,7 @@ import lift.majiang.community.entity.GithubUser;
 import lift.majiang.community.entity.User;
 import lift.majiang.community.mapper.UserMapper;
 import lift.majiang.community.provider.GithubProvider;
+import lift.majiang.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,8 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
-
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     //去配置文件读这个key的值的value，把他赋值到clientId
     @Value("${github.client.id}")
@@ -56,10 +56,8 @@ public class AuthorizeController {
             user.setName(githubUser.getName());
             //把long类型转成string类型
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatar_url());
-            userMapper.insert(user);
+            userService.creatOrUpdate(user);//当存在accountId的时候，不需要验证注册 否则验证注册
             response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else {
