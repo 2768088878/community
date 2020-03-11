@@ -7,6 +7,7 @@ import lift.majiang.community.mapper.PublishMapper;
 import lift.majiang.community.mapper.UserMapper;
 import lift.majiang.community.service.CommentService;
 import lift.majiang.community.service.PublishService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,14 +34,18 @@ public class PublishServiceImpl implements PublishService {
     }
 
     @Override
-    public List<QuestionDTO> questionList(Integer page) {
+    public List<QuestionDTO> questionList(String search,Integer page) {
 
         Integer currentPage = (page-1)*5;
+        List<Question> questions;
+        if (StringUtils.isNotBlank(search)){
+            questions=questionMapper.questionBysearchList(search, currentPage);
+        }else {
+            questions=questionMapper.questionList(currentPage);
+        }
 
-        List<Question> questions=questionMapper.questionList(currentPage);
         List<QuestionDTO> questionDTOList=new ArrayList<>();
         for(Question question:questions){
-            System.out.println("publishService测试:"+question);
             User user=userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);

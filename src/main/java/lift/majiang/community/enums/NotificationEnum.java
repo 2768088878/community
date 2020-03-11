@@ -5,11 +5,12 @@ public enum NotificationEnum {
     REPLY_QUESTION(1,"回复了问题"),
     REPLY_COMMENT(2,"回复了你");
 
-    private int type;
+
+    private int type1;
     private String name;
 
     public int getType() {
-        return type;
+        return type1;
     }
 
     public String getName() {
@@ -17,7 +18,7 @@ public enum NotificationEnum {
     }
 
     NotificationEnum(int type, String name) {
-        this.type = type;
+        this.type1 = type;
         this.name = name;
     }
 

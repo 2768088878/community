@@ -18,7 +18,7 @@ public class HotTagTasks {
     @Autowired
     private QuestionMapper questionMapper;
 
-    @Scheduled(fixedRate = 10000)//五秒
+    @Scheduled(fixedRate = 60*60*24)//五秒
     public void reportCurrentTime() {
 
         questionMapper.flushTemp();

@@ -22,6 +22,10 @@ public interface PublishMapper {
     @Select("select * from question order by gmt_create DESC limit #{current} , 5")
     public List<Question> questionList(Integer current);
 
+    //搜索栏搜问题
+    @Select("select * from question where title like CONCAT('%',#{search},'%')  order by gmt_create DESC limit #{current} , 5")
+    public List<Question> questionBysearchList(@Param("search") String search,@Param("current") Integer current);
+
     //统计有多少问题
     @Select("select count(*) from question")
     public int questionCount();

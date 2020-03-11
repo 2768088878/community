@@ -3,6 +3,7 @@ package lift.majiang.community.controller;
 import lift.majiang.community.entity.NotificationDTO;
 import lift.majiang.community.entity.QuestionDTO;
 import lift.majiang.community.entity.User;
+import lift.majiang.community.exception.CustomizeException;
 import lift.majiang.community.service.CommentService;
 import lift.majiang.community.service.NotificationService;
 import lift.majiang.community.service.PublishService;
@@ -33,6 +34,10 @@ public class ProfileController {
 
 
         User user = (User) request.getSession().getAttribute("user");
+        if(null==user){
+            throw new CustomizeException("请先登录！");
+        }
+
 
         /*通知数*/
         Integer noticeCount = notificationService.noticeCount(user.getId());

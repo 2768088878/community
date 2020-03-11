@@ -47,7 +47,7 @@ public class QuestionController {
         model.addAttribute("question",questionDTO);
         model.addAttribute("comments",comments);
         model.addAttribute("relateQuestions",RelateQuestions);
-        return "question";
+       return "question";
     }
 
     @GetMapping("notification/{id}")

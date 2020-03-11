@@ -3,6 +3,7 @@ package lift.majiang.community.controller;
 import lift.majiang.community.entity.Question;
 import lift.majiang.community.entity.QuestionDTO;
 import lift.majiang.community.entity.User;
+import lift.majiang.community.exception.CustomizeException;
 import lift.majiang.community.mapper.QuestionMapper;
 import lift.majiang.community.service.IndexService;
 import lift.majiang.community.service.PublishService;
@@ -16,6 +17,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -31,7 +34,10 @@ public class IndexController {
     private QuestionMapper questionMapper;
 
     @GetMapping("/")
-    public String Hello(@RequestParam(name="page",defaultValue="1") Integer page,HttpServletRequest request, HttpSession session,Model model){
+    public String Hello(@RequestParam(name="page",defaultValue="1") Integer page,
+                        @RequestParam(name="search",required = false) String search,
+                        HttpServletRequest request,
+                        HttpSession session,Model model) throws IOException {
 
 
         //分页
@@ -57,7 +63,7 @@ public class IndexController {
             nextPage=page+1;
         }
 
-        List<QuestionDTO> questionList= publishService.questionList(page);
+        List<QuestionDTO> questionList= publishService.questionList(search,page);
 
         /*热门话题*/
         List<Question> hotQuestions = questionMapper.hotQuestions();
@@ -69,6 +75,9 @@ public class IndexController {
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("lastPage", lastPage);
         model.addAttribute("nextPage", nextPage);
+//        if (questionList.size()==0){
+//            throw new CustomizeException("没有该帖子");
+//        }
         return "index";
     }
 
@@ -82,6 +91,5 @@ public class IndexController {
         return "redirect:/";
 
     }
-        Lock lock=new ReentrantLock();
 
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PublishService {
 
-    public List<QuestionDTO> questionList(Integer page);
+    public List<QuestionDTO> questionList(String search,Integer page);
 
     //统计首页有多少问题
     public int questionCount();
