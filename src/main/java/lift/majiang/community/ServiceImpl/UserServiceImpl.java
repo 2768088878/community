@@ -11,21 +11,38 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public void creatOrUpdate(User user){
-        User dbUser=userMapper.findByAccountId(user.getAccountId());
-        if (dbUser==null){
-            //插入
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            userMapper.insert(user);
-        }else {
-            //更新
-            dbUser.setGmtModified(System.currentTimeMillis());
-            dbUser.setAvatarUrl(user.getAvatarUrl());
-            dbUser.setName(user.getName());
-            dbUser.setToken(user.getToken());
-            userMapper.update(dbUser);
+    /*
+     *登录
+     */
+    public User findByUser(User user){
+        User dbUser=userMapper.findByUser(user.getName(),user.getPwd());
+        return dbUser;
         }
 
+
+    public String  findByEmail(String email){
+        String e=userMapper.findByEmail(email);
+        if (e==null){
+            return "ok";
+        }else {
+            return "该邮箱已注册";
+        }
+    }
+
+    public String findByName(String name){
+        String n=userMapper.findByName(name);
+        if (n==null){
+            return "ok";
+        }else {
+            return "该账号已注册";
+        }
+    }
+    /*
+     *注册
+     */
+    public void register(User user){
+        //先查找有没有已经注册的用户名和邮箱
+
+        userMapper.insert(user);
     }
 }

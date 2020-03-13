@@ -6,6 +6,7 @@ import lift.majiang.community.entity.User;
 import lift.majiang.community.exception.CustomizeException;
 import lift.majiang.community.mapper.QuestionMapper;
 import lift.majiang.community.service.IndexService;
+import lift.majiang.community.service.NotificationService;
 import lift.majiang.community.service.PublishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,8 @@ public class IndexController {
     private PublishService publishService;
     @Autowired
     private QuestionMapper questionMapper;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/")
     public String Hello(@RequestParam(name="page",defaultValue="1") Integer page,
@@ -39,7 +42,12 @@ public class IndexController {
                         HttpServletRequest request,
                         HttpSession session,Model model) throws IOException {
 
-
+        User user= (User) session.getAttribute("user");
+        if (null!=user){
+            /*通知数*/
+            Integer noticeCount = notificationService.noticeCount(user.getId());
+            request.getSession().setAttribute("noticeCount",noticeCount);
+        }
         //分页
         Integer totalCount=publishService.questionCount();
         Integer totalPage;

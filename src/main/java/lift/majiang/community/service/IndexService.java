@@ -8,7 +8,5 @@ import org.springframework.stereotype.Service;
 
 public interface IndexService {
 
-    public User findByToken(String token);
-
 
 }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" href="css/LoginStyle.css"></link>
+    <link type="text/css" rel="stylesheet" href="css/icon.css"></link>
+</head>
+<body>
+
+<div class="top">
+
+</div>
+<div class="login-box">
+    <h1>登录页面</h1>
+    <form action="/login" method="post">
+        <div class="textbox">
+            <i class="iconfont">&#xeb90;</i>
+            <input type="text" placeholder="Username" name="name" id="name">
+
+        </div>
+
+
+        <div class="textbox">
+            <i class="iconfont">&#xe620;</i>
+            <input type="password" placeholder="Password" name="pwd" id="pwd">
+        </div>
+
+        <input class="btn" type="submit"  value="登录">
+    </form>
+    <input class="btn" type="button" name="" value="注册" onclick="window.location.href='/toRegister'">
+
+</div>
+
+
+
+<script type="text/javascript">
+    var username;
+    var pwd;
+    var remember="<%=remember%>";
+
+
+
+</script>
+
+
+
+</body>
+</html>

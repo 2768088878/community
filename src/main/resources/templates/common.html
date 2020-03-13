@@ -30,7 +30,7 @@
                 <li th:if="${session.user!=null}"><a href="/publish">发布</a></li>
                 <li><a href="/profile/replies">通知<span class="badge" style="margin-left: 5px" th:text="${session.noticeCount}">42</span></a></li>
                 <li th:if="${session.user==null}">
-                    <a href="https://github.com/login/oauth/authorize?client_id=b5d45514c04c82bf47f4&redirect_uri=http://localhost:8087/callback&scope=user&state=1">登录</a>
+                    <a href="/toLogin">登录</a>
                 </li>
                 <li class="dropdown" th:if="${session.user!= null}">
                     <a href="#" class="dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

@@ -9,15 +9,23 @@ public interface UserMapper {
     @Select("select * from user")
     public void select();
 
-    @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified,avatar_url) values (#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
+    @Insert("insert into user (name,pwd,email) values (#{name},#{pwd},#{email})")
     public void insert(User user);
-
-    //当传入的值不是class对象的时候，在形参前需要加上@Param （两个参数以上必加）
-    @Select("select * from user where token = #{token}")
-    public User findByToken(@Param("token") String token);
 
     @Select("select * from user where id = #{id}")
     public User findById(@Param("id") Integer creator);
+
+    @Select("select email from user where email = #{email}")
+    public String findByEmail(@Param("email") String email);
+
+    @Select("select name from user where name = #{name}")
+    public String findByName(@Param("name") String name);
+
+    //当传入的值不是class对象的时候，在形参前需要加上@Param （两个参数以上必加）
+    @Select("select * from user where name = #{name} and pwd = #{pwd}" )
+    public User findByUser(@Param("name") String name,@Param("pwd") String pwd);
+
+
 
     @Select("select * from user where account_id = #{accountId}")
     public User findByAccountId(String accountId);

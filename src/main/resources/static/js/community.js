@@ -1,3 +1,7 @@
+function my$(id){
+    return document.getElementById(id);
+}
+
 /*评论*/
 function post(){
     var content = $("#comment_content").val();
