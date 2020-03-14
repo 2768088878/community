@@ -39,7 +39,9 @@ public class loginAndRegisterController {
     登录
      */
     @PostMapping("/login")
-    public String login(User user, Model model, HttpSession session,HttpServletRequest request) {
+    public String login(User user, Model model, HttpSession session,HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html; charset=UTF-8"); //转码
         User u = userService.findByUser(user);
         if (u != null) {
             /*通知数*/
@@ -48,7 +50,15 @@ public class loginAndRegisterController {
             session.setAttribute("user", u);
             return "redirect:/";
         } else {
-            return "redirect:/toLogin";
+            model.addAttribute("msg", "error");
+            PrintWriter printWriter = response.getWriter();
+            printWriter.flush();
+            printWriter.println("<script>");
+            printWriter.println("alert('登录失败！');");
+            printWriter.println("history.back();");//这种不会刷新页面
+            printWriter.println("history.go(0);");//这种会刷新页面
+            printWriter.println("</script>");
+            return null;
         }
     }
 
