@@ -67,18 +67,31 @@ public class loginAndRegisterController {
      */
     @PostMapping("/register")
     public String register (User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html; charset=UTF-8"); //转码
 
         String emailFlag = userService.findByEmail(user.getEmail());
         String nameFlag = userService.findByName(user.getName());
 
         if (emailFlag.equals("ok")&&nameFlag.equals("ok")){
             userService.register(user);
-            System.out.println("注册成功");
-            return "redirect:/toLogin";
+            PrintWriter printWriter = response.getWriter();
+            printWriter.flush();
+            printWriter.println("<script>");
+            printWriter.println("alert('注册成功！');");
+            printWriter.println("history.back();");//这种不会刷新页面
+            printWriter.println("history.go(0);");//这种会刷新页面
+            printWriter.println("</script>");
+            return null;
         }else {
-            System.out.println("邮箱或者用户名已存在");
-            return "redirect:/toLogin";
+            PrintWriter printWriter = response.getWriter();
+            printWriter.flush();
+            printWriter.println("<script>");
+            printWriter.println("alert('邮箱或者用户名已存在！');");
+            printWriter.println("history.back();");//这种不会刷新页面
+            printWriter.println("history.go(0);");//这种会刷新页面
+            printWriter.println("</script>");
+            return null;
         }
 
     }
